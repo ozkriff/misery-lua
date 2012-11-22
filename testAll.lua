@@ -25,7 +25,7 @@ local runSuite = function(suite)
   end
 end
 
-local runSuite = function(suiteName)
+local loadAndRunSuite = function(suiteName)
   print('* suite \'' .. suiteName .. '\'')
   local suite = require(suiteName)
   assert(suite ~= nil)
@@ -34,7 +34,7 @@ end
 
 local runAllTestSuits = function(suits)
   for _, suiteName in ipairs(suits) do
-    runSuite(suiteName)
+    loadAndRunSuite(suiteName)
   end
 end
 
