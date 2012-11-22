@@ -148,9 +148,17 @@ M.next = function(self)
   self._currentLexem = self._lexems[1]
 end
 
-M.eat = function(self, expectedLexem)
-  -- TODO: ...
+M.noMoreLexemsLeft = function(self)
+  return (#self._lexems == 0)
 end
+
+-- TODO: what to do in case of errors?
+M.eat = function(self, expectedLexem)
+  assert(self:lexem() == expectedLexem)
+  self:next()
+end
+
+-- TODO: peek
 
 M.lexem = function(self)
   return self._currentLexem

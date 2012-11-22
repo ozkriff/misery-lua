@@ -31,6 +31,7 @@ suite.testParseString = function()
   doSimpleParseTest{'ab', ' ', '123', ' ', 'c'}
   doSimpleParseTest{'a', ' ', '==', ' ', 'b'}
   doSimpleParseTest{'a', '==', 'b'}
+  doSimpleParseTest{'a', ' ', '==', ' ', 'b'}
   doSimpleParseTest{
       'func', '(', 'arg1', ',', ' ', 'argC', ',', ' ', '4', ')'}
   doSimpleParseTest{
@@ -43,7 +44,7 @@ end
 -- lexer:eat() -- сожрать определенную лексему
 
 -- TODO: Rename
-local testParse1 = function()
+suite.testParse1 = function()
   local lexer = Lexer.new()
   local lexems = {'func1', '(', 'a2', ',', ' ', 'b2', ')'}
   lexer:processString(table.concat(lexems))
@@ -56,7 +57,7 @@ local testParse1 = function()
   Assert.isTrue(lexer:noMoreLexemsLeft())
 end
 
-local testEat = function()
+suite.testEat = function()
   local lexer = Lexer.new()
   local lexems = {'func1', '(', 'a2', ',', ' ', 'b2', ')'}
   lexer:processString(table.concat(lexems))
@@ -67,7 +68,7 @@ local testEat = function()
   Assert.isTrue(lexer:noMoreLexemsLeft())
 end
 
-local testMultipleStrings = function()
+suite.testMultipleStrings = function()
   local lexer = Lexer.new()
   local lexems = {{'a1', ' '}, {'a2', ' ', '\n'}, {'a3'}}
   -- line 1
@@ -132,9 +133,5 @@ suite.testIndent = function()
   }
   Assert.isEqual(parsedLexemsList, expected)
 end
-
--- testParse1()
--- testEat()
--- testMultipleStrings()
 
 return suite

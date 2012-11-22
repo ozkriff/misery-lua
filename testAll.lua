@@ -30,7 +30,8 @@ local loadAndRunSuite = function(suiteName)
   print('* suite \'' .. suiteName .. '\'')
   local suite = require(suiteName)
   assert(suite ~= nil)
-  runSuite(suite)
+  -- runSuite(suite)
+  runSuiteOLD(suite)
 end
 
 local runAllTestSuits = function(suits)
@@ -43,6 +44,7 @@ local main = function()
   runAllTestSuits {
     'testLexerHelp',
     'testLexer',
+    'testParser',
   }
 end
 
