@@ -63,13 +63,9 @@ M.incDecIndent = function(prelexems)
         spacesCount = spacesCount + 1
         i = i + 1
       end
-      -- print('prevIndentLevel = '.. prevIndentLevel)
-      -- print('spacesCount = '.. spacesCount)
       indentLevel = spacesCount / 2
-      -- print('indentLevel = '.. indentLevel)
       local diff = prevIndentLevel - indentLevel
       prevIndentLevel = indentLevel
-      -- print('diff = '.. diff)
       if diff == 0 then
         table.insert(newLexemsList, {tag = 'samIndent'})
       else
