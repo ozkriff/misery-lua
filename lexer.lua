@@ -43,6 +43,8 @@ M.parseString = function(source)
       appendCharToLastLexem(char)
     elseif isName(lastLexem) and isLetterOrDigit(char) then
       appendCharToLastLexem(char)
+    elseif lastLexem == '=' and char == '=' then
+      appendCharToLastLexem(char)
     else
       table.insert(lexems, char)
     end
@@ -97,6 +99,28 @@ M.incDecIndent = function(prelexems)
         table.insert(newLexemsList, {tag = 'space'})
       elseif prelexems[i] == '\t' then
         print('ERROR!')
+      -- keywords
+      elseif prelexems[i] == 'proc' then
+        table.insert(newLexemsList, {tag = 'proc'})
+      elseif prelexems[i] == 'if' then
+        table.insert(newLexemsList, {tag = 'if'})
+      elseif prelexems[i] == '==' then
+        table.insert(newLexemsList, {tag = '=='})
+      elseif prelexems[i] == ':' then
+        table.insert(newLexemsList, {tag = ':'})
+      elseif prelexems[i] == '(' then
+        table.insert(newLexemsList, {tag = '('})
+      elseif prelexems[i] == ')' then
+        table.insert(newLexemsList, {tag = ')'})
+      elseif prelexems[i] == '[' then
+        table.insert(newLexemsList, {tag = '['})
+      elseif prelexems[i] == '[' then
+        table.insert(newLexemsList, {tag = '['})
+      elseif prelexems[i] == '{' then
+        table.insert(newLexemsList, {tag = '{'})
+      elseif prelexems[i] == '}' then
+        table.insert(newLexemsList, {tag = '}'})
+      -- /keywords
       elseif isName(prelexems[i]) then
         table.insert(newLexemsList, {tag = 'name', value = prelexems[i]})
       elseif isNumber(prelexems[i]) then

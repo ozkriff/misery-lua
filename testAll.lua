@@ -15,7 +15,8 @@ end
 local runSuite = function(suite)
   local badTests = {}
   for name, func in pairs(suite) do
-    local status = pcall(func)
+    -- local status = pcall(func)
+    func()
     if status == false then
       table.insert(badTests, name)
     end

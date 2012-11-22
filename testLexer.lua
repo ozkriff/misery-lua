@@ -29,6 +29,8 @@ suite.testParseString = function()
   doSimpleParseTest{'ab', ' ', ' ', ' ', 'c', ' '}
   doSimpleParseTest{'ab', ' ', '1', ' ', 'c'}
   doSimpleParseTest{'ab', ' ', '123', ' ', 'c'}
+  doSimpleParseTest{'a', ' ', '==', ' ', 'b'}
+  doSimpleParseTest{'a', '==', 'b'}
   doSimpleParseTest{
       'func', '(', 'arg1', ',', ' ', 'argC', ',', ' ', '4', ')'}
   doSimpleParseTest{
@@ -96,26 +98,37 @@ end
 
 suite.testIndent = function()
   local input = 
-      "a\n" ..
-      "  b 10\n" ..
-      "    c\n" ..
-      "d"
+      "proc x\n" ..
+      "  if b == 10:\n" ..
+      "    c()\n" ..
+      "d()"
   local parsedPrelexemsList = Lexer.parseString(input)
   local parsedLexemsList = Lexer.incDecIndent(parsedPrelexemsList)
   local expected = {
-    {tag = 'name' , value = 'a'},
-    {tag = 'endOfLine'},
-    {tag = 'incIndent'},
-    {tag = 'name' , value = 'b'}, 
+    {tag = 'proc'},
     {tag = 'space'},
-    {tag = 'number' , value = 10}, 
+    {tag = 'name' , value = 'x'},
     {tag = 'endOfLine'},
     {tag = 'incIndent'},
-    {tag = 'name' , value = 'c'}, 
+    {tag = 'if'},
+    {tag = 'space'},
+    {tag = 'name' , value = 'b'},
+    {tag = 'space'},
+    {tag = '=='},
+    {tag = 'space'},
+    {tag = 'number' , value = 10},
+    {tag = ':'},
+    {tag = 'endOfLine'},
+    {tag = 'incIndent'},
+    {tag = 'name' , value = 'c'},
+    {tag = '('},
+    {tag = ')'},
     {tag = 'endOfLine'},
     {tag = 'decIndent'},
     {tag = 'decIndent'},
-    {tag = 'name' , value = 'd'}, 
+    {tag = 'name' , value = 'd'},
+    {tag = '('},
+    {tag = ')'},
   }
   Assert.isEqual(parsedLexemsList, expected)
 end
