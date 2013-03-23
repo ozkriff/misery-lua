@@ -29,7 +29,7 @@ M.isEqual = function(real, expected)
     if not Misc.compare(real, expected) then
       printStacktrace()
       -- print("ASSERT: 2")
-      print(Misc.diff(expected, real))
+      print(Misc.diffTables(expected, real))
       os.exit() -- TODO: optional?
     end
   end

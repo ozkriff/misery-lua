@@ -164,11 +164,14 @@ M.split = function(self, sep)
   return fields
 end
 
-M.diff = function(table1, table2)
-  local out = ''
-
+M.diffTables = function(table1, table2)
   local ss1 = M.dump(table1) .. '\n'
   local ss2 = M.dump(table2) .. '\n'
+  return M.diffStrings(ss1, ss2)
+end
+
+M.diffStrings = function(ss1, ss2)
+  local out = ''
 
   local s1 = M.split(ss1, '\n')
   local s2 = M.split(ss2, '\n')
