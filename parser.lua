@@ -52,12 +52,12 @@ local parseFuncCallParameters = function(lexer)
   local parametersNode = {}
   local isArgRequired = false
   while lexer:lexem().tag ~= ')' do
-    local argNode = {}
+    local parameterNode = {}
     if isArgRequired and lexer:lexem().tag ~= 'name' then
       assert(false)
     end
-    argNode.name = lexer:lexem().value
-    table.insert(parametersNode, argNode)
+    parameterNode.name = lexer:lexem().value
+    table.insert(parametersNode, parameterNode)
     lexer:next()
     if lexer:lexem().tag == ',' then
       lexer:eat{tag = ','}
@@ -111,18 +111,18 @@ end
 
 local parseFuncParameters = function(lexer)
   local parametersNode = {}
-  local argExpected = false
+  local parameterExpected = false
   while lexer:lexem().tag ~= ')' do
-    local argNode = {}
-    if argExpected and lexer:lexem().type ~= 'name' then
-      assert(false) -- func x(arg1 Int,) ??
+    local parameterNode = {}
+    if parameterExpected and lexer:lexem().type ~= 'name' then
+      assert(false) -- func x(parameter1 Int,) ??
     end
-    argNode.name = lexer:lexem().value
+    parameterNode.name = lexer:lexem().value
     lexer:next()
     lexer:eat{tag = 'space'}
-    argNode.type = lexer:lexem().value
+    parameterNode.type = lexer:lexem().value
     lexer:next()
-    table.insert(parametersNode, argNode)
+    table.insert(parametersNode, parameterNode)
     if lexer:lexem().tag == ',' then
       lexer:eat{tag = ','}
       lexer:eat{tag = 'space'}
