@@ -143,7 +143,7 @@ local parseFuncDeclaration = function(lexer)
   lexer:eat{tag = ')'}
   funcDeclarationNode.returnValue = {}
   -- return value
-  if lexer:lexem().tag == 'space' then
+  if lexer:lexem().tag ~= ':' then
     lexer:eat{tag = 'space'}
     local returnValueNode = {}
     returnValueNode.type = lexer:lexem().value
