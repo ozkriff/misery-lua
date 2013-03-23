@@ -67,6 +67,47 @@ local parseFuncCallParameters = function(lexer)
   return parametersNode
 end
 
+local parseFuncCall = function(lexer)
+  local callNode = {}
+  callNode.tag = 'functionCall'
+  callNode.name = lexer:lexem().value
+  lexer:next()
+  lexer:eat{tag = '('}
+  callNode.parameters = parseFuncCallParameters(lexer)
+  lexer:eat{tag = ')'}
+  lexer:eat{tag = 'endOfLine'}
+  return callNode
+end
+
+local parseVarDeclaration = function(lexer)
+  local varNode = {}
+  lexer:eat{tag = 'var'}
+  lexer:eat{tag = 'space'}
+  varNode.tag = 'variableDeclaration'
+  varNode.name = lexer:lexem().value
+  lexer:next()
+  lexer:eat{tag = 'space'}
+  varNode.type = lexer:lexem().value
+  lexer:next()
+  lexer:eat{tag = 'endOfLine'}
+  return varNode
+end
+
+local parseFuncBody = function(lexer)
+  local funcBodyNode = {}
+  while lexer:lexem().tag ~= 'decIndent' do
+    if lexer:lexem().tag == 'var' then
+      local varNode = parseVarDeclaration(lexer)
+      table.insert(funcBodyNode, varNode)
+    end
+    if lexer:lexem().tag == 'name' then
+      local callNode = parseFuncCall(lexer)
+      table.insert(funcBodyNode, callNode)
+    end
+  end
+  return funcBodyNode
+end
+
 local parseFuncDeclaration = function(lexer)
   local funcDeclarationNode = {}
   funcDeclarationNode.tag = 'functionDeclaration'
@@ -121,35 +162,7 @@ local parseFuncDeclaration = function(lexer)
   lexer:eat{tag = ':'}
   lexer:eat{tag = 'endOfLine'}
   lexer:eat{tag = 'incIndent'}
-
-  funcDeclarationNode.body = {}
-  while lexer:lexem().tag ~= 'decIndent' do
-    -- print('{'..lexer:lexem().tag..'}')
-    if lexer:lexem().tag == 'var' then
-      lexer:eat{tag = 'var'}
-      lexer:eat{tag = 'space'}
-      local varNode = {}
-      varNode.tag = 'variableDeclaration'
-      varNode.name = lexer:lexem().value
-      lexer:next()
-      lexer:eat{tag = 'space'}
-      varNode.type = lexer:lexem().value
-      lexer:next()
-      lexer:eat{tag = 'endOfLine'}
-      table.insert(funcDeclarationNode.body, varNode)
-    end
-    if lexer:lexem().tag == 'name' then
-      local callNode = {}
-      callNode.tag = 'functionCall'
-      callNode.name = lexer:lexem().value
-      lexer:next()
-      lexer:eat{tag = '('}
-      callNode.parameters = parseFuncCallParameters(lexer)
-      lexer:eat{tag = ')'}
-      lexer:eat{tag = 'endOfLine'}
-      table.insert(funcDeclarationNode.body, callNode)
-    end
-  end
+  funcDeclarationNode.body = parseFuncBody(lexer)
   return funcDeclarationNode
 end
 
