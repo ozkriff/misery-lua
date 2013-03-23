@@ -206,7 +206,6 @@ M.diffStrings = function(ss1, ss2)
   else
     out = '[[ THEY ARE EQUAL ]]\n'
   end
-
   return out
 end
 
