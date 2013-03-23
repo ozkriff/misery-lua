@@ -4,7 +4,6 @@ local Parser = require('parser')
 local Lexer = require('lexer')
 local Misc = require('misc')
 local Assert = require('assert')
-local prettyPrint = require('prettyPrint')
 
 local suite = Misc.newModule()
 
@@ -86,7 +85,6 @@ suite.testGenerateSimpleAST = function()
       },
     },
   }
-  -- print(prettyPrint(realAST))
   Assert.isEqual(realAST, expectedAST)
 end
 

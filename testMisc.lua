@@ -2,7 +2,6 @@
 
 local Misc = require('misc')
 local Assert = require('assert')
-local prettyPrint = require('prettyPrint')
 local math = require('math')
 
 local suite = Misc.newModule()

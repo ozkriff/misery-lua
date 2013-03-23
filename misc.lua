@@ -167,8 +167,8 @@ end
 M.diff = function(table1, table2)
   local out = ''
 
-  local ss1 = prettyPrint(table1) .. '\n'
-  local ss2 = prettyPrint(table2) .. '\n'
+  local ss1 = M.dump(table1) .. '\n'
+  local ss2 = M.dump(table2) .. '\n'
 
   local s1 = M.split(ss1, '\n')
   local s2 = M.split(ss2, '\n')

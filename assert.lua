@@ -1,7 +1,6 @@
 -- See LICENSE file for copyright and license details
 
 local Misc = require('misc')
--- local prettyPrint = require('prettyPrint')
 
 local M = Misc.newModule()
 

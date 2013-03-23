@@ -3,7 +3,6 @@
 local Misc = require('misc')
 local Assert = require('assert')
 local Lexer = require('lexer')
-local prettyPrint = require('prettyPrint')
 
 local suite = Misc.newModule()
 
@@ -116,7 +115,6 @@ suite.testIndent = function()
       "    c.f()\n" ..
       "d()\n"
   local parsedPrelexemsList = Lexer.parseString(input)
-  -- print(prettyPrint(parsedPrelexemsList))
   local parsedLexemsList = Lexer.incDecIndent(parsedPrelexemsList)
   local expected = {
     {tag = 'func'},
@@ -155,7 +153,6 @@ suite.testString = function()
   local input = 
       "x.\'kill me\' y"
   local parsedPrelexemsList = Lexer.parseString(input)
-  -- print(prettyPrint(parsedPrelexemsList))
   local parsedLexemsList = Lexer.incDecIndent(parsedPrelexemsList)
   local expected = {
     {tag = 'name' , value = 'x'},
@@ -164,9 +161,7 @@ suite.testString = function()
     {tag = ' '},
     {tag = 'name' , value = 'y'},
   }
-  -- print(prettyPrint(parsedLexemsList))
   Assert.isEqual(parsedLexemsList, expected)
-
 end
 
 return suite
