@@ -45,11 +45,11 @@ end
 
 local main = function()
   runAllTestSuits {
-    'testMisc',
-    'testLexerHelp',
-    'testLexer',
-    'testParser',
-    'testGenerator',
+    'miscTest',
+    'lexerHelpTest',
+    'lexerTest',
+    'parserTest',
+    'generatorTest',
   }
 end
 
