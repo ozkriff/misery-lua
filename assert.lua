@@ -10,7 +10,7 @@ local printStacktrace = function()
   -- table.remove(stacktarce, 1) -- remove 'traceback:..'
   -- table.remove(stacktarce) -- remove 'in C[?]'
   for i = 1, #stacktarce do
-    if not string.find(stacktarce[i], 'testAll.lua') 
+    if not string.find(stacktarce[i], 'runTests.lua') 
         and not string.find(stacktarce[i], 'assert.lua') 
     then
       print(stacktarce[i])

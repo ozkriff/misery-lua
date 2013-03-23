@@ -8,5 +8,5 @@ Misery compiler generates native code via compilation to ANSI C.
 Misery compiler is implemented in Lua.
 
 
-Run `lua5.2 testAll.lua`.
+Run `lua5.2 runTests.lua`.
 
