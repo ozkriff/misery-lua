@@ -1,6 +1,7 @@
 -- See LICENSE file for copyright and license details
 
 local Misc = require('misc')
+local Assert = require('assert')
 
 local M = Misc.newType()
 
@@ -130,6 +131,15 @@ local parseFuncParameters = function(lexer)
   return parametersNode
 end
 
+local parseFuncReturnValue = function(lexer)
+  lexer:eat{tag = 'space'}
+  local returnValueNode = {}
+  Assert.isEqual(lexer:lexem().tag, 'name')
+  returnValueNode.type = lexer:lexem().value
+  lexer:next()
+  return returnValueNode
+end
+
 local parseFuncDeclaration = function(lexer)
   local funcDeclarationNode = {}
   funcDeclarationNode.tag = 'functionDeclaration'
@@ -142,16 +152,11 @@ local parseFuncDeclaration = function(lexer)
   funcDeclarationNode.parameters = parseFuncParameters(lexer)
   lexer:eat{tag = ')'}
   funcDeclarationNode.returnValue = {}
-  -- return value
   if lexer:lexem().tag ~= ':' then
-    lexer:eat{tag = 'space'}
-    local returnValueNode = {}
-    returnValueNode.type = lexer:lexem().value
+    local returnValueNode = parseFuncReturnValue(lexer)
     table.insert(funcDeclarationNode.returnValue,
         returnValueNode)
-    lexer:next()
   end
-
   lexer:eat{tag = ':'}
   lexer:eat{tag = 'endOfLine'}
   lexer:eat{tag = 'incIndent'}
