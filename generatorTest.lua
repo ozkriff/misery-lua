@@ -1,46 +1,40 @@
 -- See LICENSE file for copyright and license details
 
 local Generator = require('generator')
-local Parser = require('parser')
-local Lexer = require('lexer')
 local Misc = require('misc')
 local Assert = require('assert')
 
 local suite = Misc.newModule()
 
 suite.testSimple = function()
-  local input =
-      'type Type1 struct:\n' ..
-      '  field1 Int\n' ..
-      '  field2 Float\n' ..
+  local ast = {
+    {
+      tag = 'typeDeclaration',
+      name = 'Type1',
+      fields = {
+        { name = 'field1', type = 'Int' },
+        { name = 'field2', type = 'Float' }
+      }
+    }
+  }
+  local codeInAnsiC = Generator.generate(ast)
+  local expectedCodeInAnsiC =
+      '#include <stdio.h>\n' ..
       '\n' ..
-      'func f1(arg2 Int):\n' ..
-      '  var tmp Type1\n' ..
+      'typedef int Int;\n' ..
+      'typedef float Float;\n' ..
       '\n' ..
-      'func x(arg1 Int, arg2 Float):\n' ..
-      '  var var1 Int\n' ..
-      '  f1(arg1)\n' ..
-      '\n' ..
-      'func main() Int:\n' ..
-      '  var var2i Int\n' ..
-      '  var var2f Float\n' ..
-      '  x(var2i, var2f)\n' ..
-      ''
-
-  local parser = Parser.new()
-  local lexer = Lexer.new()
-  lexer:processString(input)
-  parser:setLexer(lexer)
-  local realAST = parser:parse()
-
-  local codeInAnsiC = Generator.generate(realAST)
-  -- print(codeInAnsiC)
-
-  -- Assert.isEqual(realAST, expectedAST)
-
-  local outFile = io.open('out.c', 'w')
-  outFile:write(codeInAnsiC)
-  outFile:close()
+      'typedef struct {\n' ..
+      '  Int field1;\n' ..
+      '  Float field2;\n' ..
+      '} Type1;\n' ..
+      '\n'
+  Assert.isEqual(codeInAnsiC, expectedCodeInAnsiC)
 end
+
+-- TODO: write to some file
+-- local outFile = io.open('out.c', 'w')
+-- outFile:write(codeInAnsiC)
+-- outFile:close()
 
 return suite
