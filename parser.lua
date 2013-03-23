@@ -147,7 +147,8 @@ local parseFuncDeclaration = function(lexer)
     lexer:eat{tag = 'space'}
     local returnValueNode = {}
     returnValueNode.type = lexer:lexem().value
-    table.insert(funcDeclarationNode.returnValue, returnValueNode)
+    table.insert(funcDeclarationNode.returnValue,
+        returnValueNode)
     lexer:next()
   end
 
