@@ -168,9 +168,13 @@ M.split = function(self, sep)
   assert(type(self) == 'string')
   assert(sep ~= nil)
   assert(type(sep) == 'string')
-  local sep, fields = sep or ":", {}
+  local sep = sep or ":"
+  local fields = {}
+  local subfunc = function(c)
+    fields[#fields+1] = c
+  end
   local pattern = string.format("([^%s]+)", sep)
-  self:gsub(pattern, function(c) fields[#fields+1] = c end)
+  self:gsub(pattern, subfunc)
   return fields
 end
 
