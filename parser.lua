@@ -20,7 +20,7 @@ local parseTypeField = function(lexer)
   local fieldNode = {}
   fieldNode.name = lexer:lexem().value
   lexer:next()
-  lexer:eat{tag = 'space'}
+  lexer:eat{tag = ' '}
   fieldNode.type = lexer:lexem().value
   lexer:next()
   lexer:eat{tag = 'endOfLine'}
@@ -31,10 +31,10 @@ local parseTypeDeclaration = function(lexer)
   local typeDeclarationNode = {}
   typeDeclarationNode.tag = 'typeDeclaration'
   lexer:eat{tag = 'type'}
-  lexer:eat{tag = 'space'}
+  lexer:eat{tag = ' '}
   typeDeclarationNode.name = lexer:lexem().value
   lexer:next()
-  lexer:eat{tag = 'space'}
+  lexer:eat{tag = ' '}
   lexer:eat{tag = 'struct'}
   lexer:eat{tag = ':'}
   lexer:eat{tag = 'endOfLine'}
@@ -61,7 +61,7 @@ local parseFuncCallParameters = function(lexer)
     lexer:next()
     if lexer:lexem().tag == ',' then
       lexer:eat{tag = ','}
-      lexer:eat{tag = 'space'}
+      lexer:eat{tag = ' '}
       isArgRequired = true
     end
   end
@@ -83,11 +83,11 @@ end
 local parseVarDeclaration = function(lexer)
   local varNode = {}
   lexer:eat{tag = 'var'}
-  lexer:eat{tag = 'space'}
+  lexer:eat{tag = ' '}
   varNode.tag = 'variableDeclaration'
   varNode.name = lexer:lexem().value
   lexer:next()
-  lexer:eat{tag = 'space'}
+  lexer:eat{tag = ' '}
   varNode.type = lexer:lexem().value
   lexer:next()
   lexer:eat{tag = 'endOfLine'}
@@ -119,20 +119,20 @@ local parseFuncParameters = function(lexer)
     end
     parameterNode.name = lexer:lexem().value
     lexer:next()
-    lexer:eat{tag = 'space'}
+    lexer:eat{tag = ' '}
     parameterNode.type = lexer:lexem().value
     lexer:next()
     table.insert(parametersNode, parameterNode)
     if lexer:lexem().tag == ',' then
       lexer:eat{tag = ','}
-      lexer:eat{tag = 'space'}
+      lexer:eat{tag = ' '}
     end
   end
   return parametersNode
 end
 
 local parseFuncReturnValue = function(lexer)
-  lexer:eat{tag = 'space'}
+  lexer:eat{tag = ' '}
   local returnValueNode = {}
   Assert.isEqual(lexer:lexem().tag, 'name')
   returnValueNode.type = lexer:lexem().value
@@ -144,7 +144,7 @@ local parseFuncDeclaration = function(lexer)
   local funcDeclarationNode = {}
   funcDeclarationNode.tag = 'functionDeclaration'
   lexer:next()
-  lexer:eat{tag = 'space'}
+  lexer:eat{tag = ' '}
   assert(lexer:lexem().tag == 'name')
   funcDeclarationNode.name = lexer:lexem().value
   lexer:next()

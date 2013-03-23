@@ -124,7 +124,7 @@ M.incDecIndent = function(prelexems)
       end
     else
       if prelexem == ' ' then
-        table.insert(newLexemsList, {tag = 'space'})
+        table.insert(newLexemsList, {tag = ' '})
       elseif prelexem == '\t' then
         print('ERROR!')
       elseif isKeyword(prelexem) then

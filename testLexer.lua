@@ -57,7 +57,7 @@ suite.testParse1 = function()
   lexer:next()
   Assert.isEqual(lexer:lexem(), {tag = ','})
   lexer:next()
-  Assert.isEqual(lexer:lexem(), {tag = 'space'})
+  Assert.isEqual(lexer:lexem(), {tag = ' '})
   lexer:next()
   Assert.isEqual(lexer:lexem(), {tag = 'name', value = 'b2'})
   lexer:next()
@@ -74,7 +74,7 @@ suite.testEat = function()
   lexer:eat{tag = '('}
   lexer:eat{tag = 'name', value = 'a2'}
   lexer:eat{tag = ','}
-  lexer:eat{tag = 'space'}
+  lexer:eat{tag = ' '}
   lexer:eat{tag = 'name', value = 'b2'}
   lexer:eat{tag = ')'}
   Assert.isTrue(lexer:noMoreLexemsLeft())
@@ -88,7 +88,7 @@ suite.testMultipleStrings = function()
   Assert.isFalse(lexer:noMoreLexemsLeft())
   Assert.isEqual(lexer:lexem(), {tag = 'name', value = 'a1'})
   lexer:next()
-  Assert.isEqual(lexer:lexem(), {tag = 'space'})
+  Assert.isEqual(lexer:lexem(), {tag = ' '})
   lexer:next()
   Assert.isTrue(lexer:noMoreLexemsLeft())
   -- line 2
@@ -96,7 +96,7 @@ suite.testMultipleStrings = function()
   Assert.isFalse(lexer:noMoreLexemsLeft())
   Assert.isEqual(lexer:lexem(), {tag = 'name', value = 'a2'})
   lexer:next()
-  Assert.isEqual(lexer:lexem(), {tag = 'space'})
+  Assert.isEqual(lexer:lexem(), {tag = ' '})
   lexer:next()
   Assert.isEqual(lexer:lexem(), {tag = 'endOfLine'})
   lexer:next()
@@ -120,16 +120,16 @@ suite.testIndent = function()
   local parsedLexemsList = Lexer.incDecIndent(parsedPrelexemsList)
   local expected = {
     {tag = 'func'},
-    {tag = 'space'},
+    {tag = ' '},
     {tag = 'name' , value = 'x'},
     {tag = 'endOfLine'},
     {tag = 'incIndent'},
     {tag = 'if'},
-    {tag = 'space'},
+    {tag = ' '},
     {tag = 'name' , value = 'b'},
-    {tag = 'space'},
+    {tag = ' '},
     {tag = '=='},
-    {tag = 'space'},
+    {tag = ' '},
     {tag = 'number' , value = 10},
     {tag = ':'},
     {tag = 'endOfLine'},
@@ -161,7 +161,7 @@ suite.testString = function()
     {tag = 'name' , value = 'x'},
     {tag = '.'},
     {tag = 'string' , value = 'kill me'},
-    {tag = 'space'},
+    {tag = ' '},
     {tag = 'name' , value = 'y'},
   }
   -- print(prettyPrint(parsedLexemsList))
