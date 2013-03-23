@@ -122,13 +122,7 @@ end
 -- with cycles, i.e. with recursive references.
 M.dump = function(o)
   if type(o) == 'table' then
-    local s = '{'
-    for k, v in pairs(o) do
-      -- s = s .. k .. ' = ' .. M.dump(v) .. ', '
-      s = s .. k .. '=' .. M.dump(v) .. ', '
-    end
-    s = string.gsub(s .. '}', ', }', '}')
-    return s
+    return prettyPrint(o)
   else
     return tostring(o)
   end
