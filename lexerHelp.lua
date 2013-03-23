@@ -1,6 +1,8 @@
 -- See LICENSE file for copyright and license details
 
-local M = {}
+local Misc = require('misc')
+
+local M = Misc.newModule()
 
 M.isNumber = function(str)
   if not str or #str < 1 then

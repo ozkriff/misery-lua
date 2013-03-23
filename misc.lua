@@ -1,6 +1,18 @@
 -- See LICENSE file for copyright and license details
 
+local prettyPrint = require('prettyPrint')
+
 local M = {}
+
+M.newModule = function()
+  return {}
+end
+
+M.newType = function()
+  local M = {}
+  M.__index = M
+  return M
+end
 
 -- http://lua-users.org/wiki/SimpleRound
 M.round = function(num, idp)
@@ -127,5 +139,73 @@ M.forEach = function(list, func)
     func(value)
   end
 end
+
+-------------------------------------------------
+
+local findFirstDifferentLineIndex = function(lines1, lines2)
+  for i = 1, math.min(#lines1, #lines2) do
+    if lines1[i] ~= lines2[i] then
+      return i
+    end
+  end
+  return nil
+end
+
+local findLastDifferentLineIndex = function(lines1, lines2)
+  local lastIndex = math.min(#lines1, #lines2)
+  for i = 0, lastIndex - 1 do
+    local index1 = #lines1 - i
+    local index2 = #lines2 - i
+    if lines1[index1] ~= lines2[index2] then
+      return i
+    end
+  end
+  return nil
+end
+
+M.split = function(self, sep)
+  local sep, fields = sep or ":", {}
+  local pattern = string.format("([^%s]+)", sep)
+  self:gsub(pattern, function(c) fields[#fields+1] = c end)
+  return fields
+end
+
+M.diff = function(table1, table2)
+  local out = ''
+
+  local ss1 = prettyPrint(table1) .. '\n'
+  local ss2 = prettyPrint(table2) .. '\n'
+
+  local s1 = M.split(ss1, '\n')
+  local s2 = M.split(ss2, '\n')
+
+  local firstIndex = findFirstDifferentLineIndex(s1, s2)
+  local lastIndex = findLastDifferentLineIndex(s1, s2)
+
+  local lastIndex1 = #s1 - lastIndex
+  local lastIndex2 = #s2 - lastIndex
+
+  if firstIndex ~= nil and lastIndex ~= nil then
+    for i = 1, firstIndex - 1 do
+      out = out .. '| ' .. s1[i] .. '\n'
+    end
+    for i = firstIndex, lastIndex1 do
+      out = out .. '1 ' .. s1[i] .. '\n'
+    end
+    for i = firstIndex, lastIndex2 do
+      out = out .. '2 ' .. s2[i] .. '\n'
+    end
+    for i = lastIndex1 + 1, #s1 do
+      out = out .. '| ' .. s1[i] .. '\n'
+    end
+  else
+    out = '[[ THEY ARE EQUAL ]]\n'
+  end
+
+  return out
+end
+
+
+-------------------------------------------------
 
 return M

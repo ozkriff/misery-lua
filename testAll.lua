@@ -2,13 +2,16 @@ local Misc = require('misc')
 
 local runSuiteOLD = function(suite)
   for name, func in pairs(suite) do
-    io.write('  * test \'' .. name .. '\' .. ')
-    local status, errmsg = pcall(func)
-    if status == false then
-      io.write('[FAIL] : ', errmsg,'\n')
-    else
-      io.write('ok\n')
-    end
+    -- io.write(' test \'' .. name .. '\'')
+    -- io.write(string.rep(' ', 30 - #name))
+    func()
+    -- io.write('[ok]\n')
+    -- local status, errmsg = pcall(func)  -- TODO: use xpcall
+    -- if status == false then
+    --   io.write('[FAIL] : ', errmsg,'\n')
+    -- else
+    --   io.write('[ok]\n')
+    -- end
   end
 end
 
@@ -27,7 +30,7 @@ local runSuite = function(suite)
 end
 
 local loadAndRunSuite = function(suiteName)
-  print('* suite \'' .. suiteName .. '\'')
+  -- io.write('suite \'' .. suiteName .. '\'\n')
   local suite = require(suiteName)
   assert(suite ~= nil)
   -- runSuite(suite)
@@ -42,9 +45,11 @@ end
 
 local main = function()
   runAllTestSuits {
+    'testMisc',
     'testLexerHelp',
     'testLexer',
     'testParser',
+    'testGenerator',
   }
 end
 

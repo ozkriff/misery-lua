@@ -2,6 +2,7 @@
 
 local Misc = require('misc')
 local LexerHelp = require('lexerHelp')
+local Assert = require('assert')
 
 -- shortcuts
 local isLetterOrDigit = LexerHelp.isLetterOrDigit
@@ -12,13 +13,7 @@ local isNumber = LexerHelp.isNumber
 local isName = LexerHelp.isName
 local nthChar = LexerHelp.nthChar
 
--- lexer:lexem() -- get current lexem
--- lexer:peek(number) -- peek following lexems
--- lexer:next() -- go to next lexems
--- lexer:eat() -- сожрать определенную лексему
-
-local M = {}
-M.__index = M
+local M = Misc.newType()
 
 M.new = function()
   local self = {}
@@ -52,24 +47,71 @@ M.parseString = function(source)
   return lexems
 end
 
+local keywords = {
+  'func',
+  'struct',
+  'type',
+  'var',
+  'if',
+  '==',
+  ';',
+  ':',
+  '(',
+  ')',
+  '[',
+  ']',
+  '{',
+  '}',
+  ',',
+  '.',
+}
+
+local isKeyword = function(prelexem)
+  for _, keyword in pairs(keywords) do
+    if prelexem == keyword then
+      return true
+    end
+  end
+  return false
+end
+
+local popLexem = function(prelexemsList)
+  if prelexemsList ~= nil and #prelexemsList > 0 then
+    return table.remove(prelexemsList, 1)
+  else
+    return nil
+  end
+end
+
 M.incDecIndent = function(prelexems)
   local newLexemsList = {}
   local prevIndentLevel = 0
-  local i = 1
-  while i <= #prelexems do
-    if prelexems[i] == '\n' then
+  local prelexem = popLexem(prelexems)
+  -- while #prelexems > 0 do
+  while prelexem ~= nil do
+    if prelexem == '\'' then
+      local value = ''
+      prelexem = popLexem(prelexems)
+      while prelexem ~= nil and prelexem ~= '\'' do
+        -- print('inside string: [' .. prelexem .. ']')
+        value = value .. prelexem
+        prelexem = popLexem(prelexems)
+      end
+      prelexem = popLexem(prelexems) -- remove closing '\''
+      table.insert(newLexemsList, {tag = 'string', value = value})
+    elseif prelexem == '\n' then
       table.insert(newLexemsList, {tag = 'endOfLine'})
-      i = i + 1
       local spacesCount = 0
-      while prelexems[i] == ' ' do
+      prelexem = popLexem(prelexems)
+      while prelexem == ' ' do
         spacesCount = spacesCount + 1
-        i = i + 1
+        prelexem = popLexem(prelexems)
       end
       indentLevel = spacesCount / 2
       local diff = prevIndentLevel - indentLevel
       prevIndentLevel = indentLevel
-      if diff == 0 then
-        table.insert(newLexemsList, {tag = 'samIndent'})
+      if diff == 0 and indentLevel ~= 0 then
+        -- table.insert(newLexemsList, {tag = 'samIndent'})
       else
         while diff < 0 do
           table.insert(newLexemsList, {tag = 'incIndent'})
@@ -81,55 +123,27 @@ M.incDecIndent = function(prelexems)
         end
       end
     else
-      -- local keywords = {
-      --   'procedure',
-      --   'if',
-      --   'else',
-      --   'while',
-      --   'case',
-      --   'of',
-      --   'do',
-      -- }
-      -- for _, keyword in pairs(keywords) do
-      --   if prelexems[i] == keyword then
-      --     table.insert(newLexemsList, {tag = keyword})
-      --   end
-      -- end
-      if prelexems[i] == ' ' then
+      if prelexem == ' ' then
         table.insert(newLexemsList, {tag = 'space'})
-      elseif prelexems[i] == '\t' then
+      elseif prelexem == '\t' then
         print('ERROR!')
-      -- keywords
-      elseif prelexems[i] == 'proc' then
-        table.insert(newLexemsList, {tag = 'proc'})
-      elseif prelexems[i] == 'if' then
-        table.insert(newLexemsList, {tag = 'if'})
-      elseif prelexems[i] == '==' then
-        table.insert(newLexemsList, {tag = '=='})
-      elseif prelexems[i] == ':' then
-        table.insert(newLexemsList, {tag = ':'})
-      elseif prelexems[i] == '(' then
-        table.insert(newLexemsList, {tag = '('})
-      elseif prelexems[i] == ')' then
-        table.insert(newLexemsList, {tag = ')'})
-      elseif prelexems[i] == '[' then
-        table.insert(newLexemsList, {tag = '['})
-      elseif prelexems[i] == '[' then
-        table.insert(newLexemsList, {tag = '['})
-      elseif prelexems[i] == '{' then
-        table.insert(newLexemsList, {tag = '{'})
-      elseif prelexems[i] == '}' then
-        table.insert(newLexemsList, {tag = '}'})
-      -- /keywords
-      elseif isName(prelexems[i]) then
-        table.insert(newLexemsList, {tag = 'name', value = prelexems[i]})
-      elseif isNumber(prelexems[i]) then
-        table.insert(newLexemsList, {tag = 'number', value = tonumber(prelexems[i])})
+      elseif isKeyword(prelexem) then
+        table.insert(newLexemsList, {tag = prelexem})
+      elseif isName(prelexem) then
+        table.insert(newLexemsList, {
+          tag = 'name',
+          value = prelexem,
+        })
+      elseif isNumber(prelexem) then
+        table.insert(newLexemsList, {
+          tag = 'number',
+          value = tonumber(prelexem),
+        })
       else
         -- TODO: error!
-        -- table.insert(newLexemsList, Misc.copy(prelexems[i]))
+        -- table.insert(newLexemsList, Misc.copy(prelexem))
       end
-      i = i + 1
+      prelexem = popLexem(prelexems)
     end
   end
   return newLexemsList
@@ -137,7 +151,7 @@ end
 
 -- TODO: rename!
 M.processString = function(self, str)
-  self._lexems = M.parseString(str)
+  self._lexems = M.incDecIndent(M.parseString(str))
   self._currentLexem = self._lexems[1]
   assert(#self._lexems > 0)
 end
@@ -154,7 +168,7 @@ end
 
 -- TODO: what to do in case of errors?
 M.eat = function(self, expectedLexem)
-  assert(self:lexem() == expectedLexem)
+  Assert.isEqual(self:lexem(), expectedLexem)
   self:next()
 end
 

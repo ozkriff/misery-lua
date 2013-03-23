@@ -20,7 +20,7 @@ local F = Assert.isFalse
 local E = Assert.isEqual
 local N = Assert.isNil
 
-local suite = {}
+local suite = Misc.newModule()
 
 suite.testIsDigit = function()
   T(isDigit('0'))

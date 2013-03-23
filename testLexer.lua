@@ -3,9 +3,9 @@
 local Misc = require('misc')
 local Assert = require('assert')
 local Lexer = require('lexer')
-local udump = require('udump')
+local prettyPrint = require('prettyPrint')
 
-local suite = {}
+local suite = Misc.newModule()
 
 suite.testConstructor = function()
   local lexer = Lexer.new()
@@ -48,12 +48,21 @@ suite.testParse1 = function()
   local lexer = Lexer.new()
   local lexems = {'func1', '(', 'a2', ',', ' ', 'b2', ')'}
   lexer:processString(table.concat(lexems))
-  local i = 1
-  while not lexer:noMoreLexemsLeft() do
-    Assert.isEqual(lexer:lexem(), lexems[i])
-    lexer:next()
-    i = i + 1
-  end
+  Assert.isFalse(lexer:noMoreLexemsLeft())
+  Assert.isEqual(lexer:lexem(), {tag = 'name', value = 'func1'})
+  lexer:next()
+  Assert.isEqual(lexer:lexem(), {tag = '('})
+  lexer:next()
+  Assert.isEqual(lexer:lexem(), {tag = 'name', value = 'a2'})
+  lexer:next()
+  Assert.isEqual(lexer:lexem(), {tag = ','})
+  lexer:next()
+  Assert.isEqual(lexer:lexem(), {tag = 'space'})
+  lexer:next()
+  Assert.isEqual(lexer:lexem(), {tag = 'name', value = 'b2'})
+  lexer:next()
+  Assert.isEqual(lexer:lexem(), {tag = ')'})
+  lexer:next()
   Assert.isTrue(lexer:noMoreLexemsLeft())
 end
 
@@ -61,10 +70,13 @@ suite.testEat = function()
   local lexer = Lexer.new()
   local lexems = {'func1', '(', 'a2', ',', ' ', 'b2', ')'}
   lexer:processString(table.concat(lexems))
-  for _, lexem in ipairs(lexems) do
-    Assert.isFalse(lexer:noMoreLexemsLeft())
-    lexer:eat(lexem)
-  end
+  lexer:eat{tag = 'name', value = 'func1'}
+  lexer:eat{tag = '('}
+  lexer:eat{tag = 'name', value = 'a2'}
+  lexer:eat{tag = ','}
+  lexer:eat{tag = 'space'}
+  lexer:eat{tag = 'name', value = 'b2'}
+  lexer:eat{tag = ')'}
   Assert.isTrue(lexer:noMoreLexemsLeft())
 end
 
@@ -74,39 +86,40 @@ suite.testMultipleStrings = function()
   -- line 1
   lexer:processString(table.concat(lexems[1]))
   Assert.isFalse(lexer:noMoreLexemsLeft())
-  Assert.isEqual(lexer:lexem(), 'a1')
+  Assert.isEqual(lexer:lexem(), {tag = 'name', value = 'a1'})
   lexer:next()
-  Assert.isEqual(lexer:lexem(), ' ')
+  Assert.isEqual(lexer:lexem(), {tag = 'space'})
   lexer:next()
   Assert.isTrue(lexer:noMoreLexemsLeft())
   -- line 2
   lexer:processString(table.concat(lexems[2]))
   Assert.isFalse(lexer:noMoreLexemsLeft())
-  Assert.isEqual(lexer:lexem(), 'a2')
+  Assert.isEqual(lexer:lexem(), {tag = 'name', value = 'a2'})
   lexer:next()
-  Assert.isEqual(lexer:lexem(), ' ')
+  Assert.isEqual(lexer:lexem(), {tag = 'space'})
   lexer:next()
-  Assert.isEqual(lexer:lexem(), '\n')
+  Assert.isEqual(lexer:lexem(), {tag = 'endOfLine'})
   lexer:next()
   Assert.isTrue(lexer:noMoreLexemsLeft())
   -- line 3
   lexer:processString(table.concat(lexems[3]))
   Assert.isFalse(lexer:noMoreLexemsLeft())
-  Assert.isEqual(lexer:lexem(), 'a3')
+  Assert.isEqual(lexer:lexem(), {tag = 'name', value = 'a3'})
   lexer:next()
   Assert.isTrue(lexer:noMoreLexemsLeft())
 end
 
 suite.testIndent = function()
   local input = 
-      "proc x\n" ..
+      "func x\n" ..
       "  if b == 10:\n" ..
-      "    c()\n" ..
-      "d()"
+      "    c.f()\n" ..
+      "d()\n"
   local parsedPrelexemsList = Lexer.parseString(input)
+  -- print(prettyPrint(parsedPrelexemsList))
   local parsedLexemsList = Lexer.incDecIndent(parsedPrelexemsList)
   local expected = {
-    {tag = 'proc'},
+    {tag = 'func'},
     {tag = 'space'},
     {tag = 'name' , value = 'x'},
     {tag = 'endOfLine'},
@@ -122,6 +135,8 @@ suite.testIndent = function()
     {tag = 'endOfLine'},
     {tag = 'incIndent'},
     {tag = 'name' , value = 'c'},
+    {tag = '.'},
+    {tag = 'name' , value = 'f'},
     {tag = '('},
     {tag = ')'},
     {tag = 'endOfLine'},
@@ -130,8 +145,28 @@ suite.testIndent = function()
     {tag = 'name' , value = 'd'},
     {tag = '('},
     {tag = ')'},
+    {tag = 'endOfLine'},
   }
+  -- print(Misc.dump(parsedLexemsList))
   Assert.isEqual(parsedLexemsList, expected)
+end
+
+suite.testString = function()
+  local input = 
+      "x.\'kill me\' y"
+  local parsedPrelexemsList = Lexer.parseString(input)
+  -- print(prettyPrint(parsedPrelexemsList))
+  local parsedLexemsList = Lexer.incDecIndent(parsedPrelexemsList)
+  local expected = {
+    {tag = 'name' , value = 'x'},
+    {tag = '.'},
+    {tag = 'string' , value = 'kill me'},
+    {tag = 'space'},
+    {tag = 'name' , value = 'y'},
+  }
+  -- print(prettyPrint(parsedLexemsList))
+  Assert.isEqual(parsedLexemsList, expected)
+
 end
 
 return suite

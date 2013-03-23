@@ -34,9 +34,7 @@ void A_A(A *this) {
     this->a = 10;
 }
 
-void A_update(A* this) {
-    this->a++;
-}
+void A_update(A* this) { this->a++; }
 
 int A_access(A* this) {
     this->vmt->update(this);
@@ -58,9 +56,7 @@ typedef struct {
     int (*access)(struct A*);
 } B_functable;
 
-typedef struct B {
-    A inherited;
-} B;
+typedef struct B { A inherited; } B;
 
 void B_B(B *this);
 void B_update(B* this);
