@@ -15,6 +15,17 @@ M.setLexer = function(self, lexer)
   self._lexer = lexer
 end
 
+local parseTypeField = function(lexer)
+  local fieldNode = {}
+  fieldNode.name = lexer:lexem().value
+  lexer:next()
+  lexer:eat{tag = 'space'}
+  fieldNode.type = lexer:lexem().value
+  lexer:next()
+  lexer:eat{tag = 'endOfLine'}
+  return fieldNode
+end
+
 local parseTypeDeclaration = function(lexer)
   local typeDeclarationNode = {}
   typeDeclarationNode.tag = 'typeDeclaration'
@@ -30,13 +41,7 @@ local parseTypeDeclaration = function(lexer)
 
   typeDeclarationNode.fields = {}
   while lexer:lexem().tag ~= 'decIndent' do
-    local fieldNode = {}
-    fieldNode.name = lexer:lexem().value
-    lexer:next()
-    lexer:eat{tag = 'space'}
-    fieldNode.type = lexer:lexem().value
-    lexer:next()
-    lexer:eat{tag = 'endOfLine'}
+    local fieldNode = parseTypeField(lexer)
     table.insert(typeDeclarationNode.fields, fieldNode)
   end
   return typeDeclarationNode
