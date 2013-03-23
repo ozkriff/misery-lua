@@ -108,6 +108,28 @@ local parseFuncBody = function(lexer)
   return funcBodyNode
 end
 
+local parseFuncParameters = function(lexer)
+  local parametersNode = {}
+  local argExpected = false
+  while lexer:lexem().tag ~= ')' do
+    local argNode = {}
+    if argExpected and lexer:lexem().type ~= 'name' then
+      assert(false) -- func x(arg1 Int,) ??
+    end
+    argNode.name = lexer:lexem().value
+    lexer:next()
+    lexer:eat{tag = 'space'}
+    argNode.type = lexer:lexem().value
+    lexer:next()
+    table.insert(parametersNode, argNode)
+    if lexer:lexem().tag == ',' then
+      lexer:eat{tag = ','}
+      lexer:eat{tag = 'space'}
+    end
+  end
+  return parametersNode
+end
+
 local parseFuncDeclaration = function(lexer)
   local funcDeclarationNode = {}
   funcDeclarationNode.tag = 'functionDeclaration'
@@ -117,39 +139,9 @@ local parseFuncDeclaration = function(lexer)
   funcDeclarationNode.name = lexer:lexem().value
   lexer:next()
   lexer:eat{tag = '('}
-
-  -- parameters
-  funcDeclarationNode.parameters = {}
-  -- сейчас точно должен быть аргумент
-  local argExpected = false
-  while lexer:lexem().tag ~= ')' do
-    -- print('{'..lexer:lexem().tag..'}')
-    local argNode = {}
-
-    if argExpected
-      and lexer:lexem().type ~= 'name'
-    then
-      -- func x(arg1 Int,) ??
-      assert(false)
-    end
-
-    argNode.name = lexer:lexem().value
-    lexer:next()
-    lexer:eat{tag = 'space'}
-    argNode.type = lexer:lexem().value
-    lexer:next()
-    table.insert(funcDeclarationNode.parameters, argNode)
-
-    if lexer:lexem().tag == ',' then
-      lexer:eat{tag = ','}
-      lexer:eat{tag = 'space'}
-    end
-  end
-
+  funcDeclarationNode.parameters = parseFuncParameters(lexer)
   lexer:eat{tag = ')'}
-
   funcDeclarationNode.returnValue = {}
-
   -- return value
   if lexer:lexem().tag == 'space' then
     lexer:eat{tag = 'space'}
