@@ -137,6 +137,10 @@ end
 -------------------------------------------------
 
 local findFirstDifferentLineIndex = function(lines1, lines2)
+  assert(lines1 ~= nil)
+  assert(type(lines1) == 'table', type(lines1))
+  assert(lines2 ~= nil)
+  assert(type(lines2) == 'table')
   for i = 1, math.min(#lines1, #lines2) do
     if lines1[i] ~= lines2[i] then
       return i
@@ -146,6 +150,10 @@ local findFirstDifferentLineIndex = function(lines1, lines2)
 end
 
 local findLastDifferentLineIndex = function(lines1, lines2)
+  assert(lines1 ~= nil)
+  assert(type(lines1) == 'table')
+  assert(lines2 ~= nil)
+  assert(type(lines2) == 'table')
   local lastIndex = math.min(#lines1, #lines2)
   for i = 0, lastIndex - 1 do
     local index1 = #lines1 - i
@@ -158,6 +166,10 @@ local findLastDifferentLineIndex = function(lines1, lines2)
 end
 
 M.split = function(self, sep)
+  assert(self ~= nil)
+  assert(type(self) == 'string')
+  assert(sep ~= nil)
+  assert(type(sep) == 'string')
   local sep, fields = sep or ":", {}
   local pattern = string.format("([^%s]+)", sep)
   self:gsub(pattern, function(c) fields[#fields+1] = c end)
@@ -165,6 +177,8 @@ M.split = function(self, sep)
 end
 
 M.diffTables = function(table1, table2)
+  assert(type(table1) == 'table')
+  assert(type(table2) == 'table')
   local ss1 = M.dump(table1) .. '\n'
   local ss2 = M.dump(table2) .. '\n'
   return M.diffStrings(ss1, ss2)
@@ -172,17 +186,13 @@ end
 
 M.diffStrings = function(ss1, ss2)
   local out = ''
-
   local s1 = M.split(ss1, '\n')
   local s2 = M.split(ss2, '\n')
-
   local firstIndex = findFirstDifferentLineIndex(s1, s2)
   local lastIndex = findLastDifferentLineIndex(s1, s2)
-
-  local lastIndex1 = #s1 - lastIndex
-  local lastIndex2 = #s2 - lastIndex
-
   if firstIndex ~= nil and lastIndex ~= nil then
+    local lastIndex1 = #s1 - lastIndex
+    local lastIndex2 = #s2 - lastIndex
     for i = 1, firstIndex - 1 do
       out = out .. '| ' .. s1[i] .. '\n'
     end
