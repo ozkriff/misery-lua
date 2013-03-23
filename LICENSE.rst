@@ -1,4 +1,6 @@
+
 MIT/X Consortium License
+------------------------
 
 @ 2012-2013 Andrey Lesnikov <ozkriff@gmail.com>
 
