@@ -47,6 +47,25 @@ local parseTypeDeclaration = function(lexer)
   return typeDeclarationNode
 end
 
+local parseFuncCallParameters = function(lexer)
+  local parametersNode = {}
+  local isArgRequired = false
+  while lexer:lexem().tag ~= ')' do
+    local argNode = {}
+    if isArgRequired and lexer:lexem().tag ~= 'name' then
+      assert(false)
+    end
+    argNode.name = lexer:lexem().value
+    table.insert(parametersNode, argNode)
+    lexer:next()
+    if lexer:lexem().tag == ',' then
+      lexer:eat{tag = ','}
+      lexer:eat{tag = 'space'}
+      isArgRequired = true
+    end
+  end
+  return parametersNode
+end
 
 local parseFuncDeclaration = function(lexer)
   local funcDeclarationNode = {}
@@ -125,29 +144,7 @@ local parseFuncDeclaration = function(lexer)
       callNode.name = lexer:lexem().value
       lexer:next()
       lexer:eat{tag = '('}
-      -- TODO: parameters
-      callNode.parameters = {}
-      local isArgRequired = false
-      while lexer:lexem().tag ~= ')' do
-        local argNode = {}
-
-        if isArgRequired
-          and lexer:lexem().tag ~= 'name'
-        then
-          assert(false)
-        end
-
-        argNode.name = lexer:lexem().value
-        table.insert(callNode.parameters, argNode)
-
-        lexer:next()
-        if lexer:lexem().tag == ',' then
-          lexer:eat{tag = ','}
-          lexer:eat{tag = 'space'}
-          isArgRequired = true
-        end
-
-      end
+      callNode.parameters = parseFuncCallParameters(lexer)
       lexer:eat{tag = ')'}
       lexer:eat{tag = 'endOfLine'}
       table.insert(funcDeclarationNode.body, callNode)
