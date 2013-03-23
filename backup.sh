@@ -1,6 +1,6 @@
 #!/bin/sh
 
-project_name="sadness"
+project_name="misery"
 
 current_path=$(pwd)
 
