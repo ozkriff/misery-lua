@@ -68,93 +68,93 @@ local parseFuncDeclaration = function(lexer)
 
     if argExpected
       and lexer:lexem().type ~= 'name'
-      then
-        -- func x(arg1 Int,) ??
-        assert(false)
-      end
-
-      argNode.name = lexer:lexem().value
-      lexer:next()
-      lexer:eat{tag = 'space'}
-      argNode.type = lexer:lexem().value
-      lexer:next()
-      table.insert(funcDeclarationNode.parameters, argNode)
-
-      if lexer:lexem().tag == ',' then
-        lexer:eat{tag = ','}
-        lexer:eat{tag = 'space'}
-      end
+    then
+      -- func x(arg1 Int,) ??
+      assert(false)
     end
 
-    lexer:eat{tag = ')'}
+    argNode.name = lexer:lexem().value
+    lexer:next()
+    lexer:eat{tag = 'space'}
+    argNode.type = lexer:lexem().value
+    lexer:next()
+    table.insert(funcDeclarationNode.parameters, argNode)
 
-    funcDeclarationNode.returnValue = {}
-
-    -- return value
-    if lexer:lexem().tag == 'space' then
+    if lexer:lexem().tag == ',' then
+      lexer:eat{tag = ','}
       lexer:eat{tag = 'space'}
-      local returnValueNode = {}
-      returnValueNode.type = lexer:lexem().value
-      table.insert(funcDeclarationNode.returnValue, returnValueNode)
-      lexer:next()
     end
+  end
 
-    lexer:eat{tag = ':'}
-    lexer:eat{tag = 'endOfLine'}
-    lexer:eat{tag = 'incIndent'}
+  lexer:eat{tag = ')'}
 
-    funcDeclarationNode.body = {}
-    while lexer:lexem().tag ~= 'decIndent' do
-      -- print('{'..lexer:lexem().tag..'}')
-      if lexer:lexem().tag == 'var' then
-        lexer:eat{tag = 'var'}
-        lexer:eat{tag = 'space'}
-        local varNode = {}
-        varNode.tag = 'variableDeclaration'
-        varNode.name = lexer:lexem().value
-        lexer:next()
-        lexer:eat{tag = 'space'}
-        varNode.type = lexer:lexem().value
-        lexer:next()
-        lexer:eat{tag = 'endOfLine'}
-        table.insert(funcDeclarationNode.body, varNode)
-      end
-      if lexer:lexem().tag == 'name' then
-        local callNode = {}
-        callNode.tag = 'functionCall'
-        callNode.name = lexer:lexem().value
-        lexer:next()
-        lexer:eat{tag = '('}
-        -- TODO: parameters
-        callNode.parameters = {}
-        local isArgRequired = false
-        while lexer:lexem().tag ~= ')' do
-          local argNode = {}
+  funcDeclarationNode.returnValue = {}
 
-          if isArgRequired
-            and lexer:lexem().tag ~= 'name'
-            then
-              assert(false)
-            end
+  -- return value
+  if lexer:lexem().tag == 'space' then
+    lexer:eat{tag = 'space'}
+    local returnValueNode = {}
+    returnValueNode.type = lexer:lexem().value
+    table.insert(funcDeclarationNode.returnValue, returnValueNode)
+    lexer:next()
+  end
 
-            argNode.name = lexer:lexem().value
-            table.insert(callNode.parameters, argNode)
+  lexer:eat{tag = ':'}
+  lexer:eat{tag = 'endOfLine'}
+  lexer:eat{tag = 'incIndent'}
 
-            lexer:next()
-            if lexer:lexem().tag == ',' then
-              lexer:eat{tag = ','}
-              lexer:eat{tag = 'space'}
-              isArgRequired = true
-            end
+  funcDeclarationNode.body = {}
+  while lexer:lexem().tag ~= 'decIndent' do
+    -- print('{'..lexer:lexem().tag..'}')
+    if lexer:lexem().tag == 'var' then
+      lexer:eat{tag = 'var'}
+      lexer:eat{tag = 'space'}
+      local varNode = {}
+      varNode.tag = 'variableDeclaration'
+      varNode.name = lexer:lexem().value
+      lexer:next()
+      lexer:eat{tag = 'space'}
+      varNode.type = lexer:lexem().value
+      lexer:next()
+      lexer:eat{tag = 'endOfLine'}
+      table.insert(funcDeclarationNode.body, varNode)
+    end
+    if lexer:lexem().tag == 'name' then
+      local callNode = {}
+      callNode.tag = 'functionCall'
+      callNode.name = lexer:lexem().value
+      lexer:next()
+      lexer:eat{tag = '('}
+      -- TODO: parameters
+      callNode.parameters = {}
+      local isArgRequired = false
+      while lexer:lexem().tag ~= ')' do
+        local argNode = {}
 
-          end
-          lexer:eat{tag = ')'}
-          lexer:eat{tag = 'endOfLine'}
-          table.insert(funcDeclarationNode.body, callNode)
+        if isArgRequired
+          and lexer:lexem().tag ~= 'name'
+        then
+          assert(false)
         end
+
+        argNode.name = lexer:lexem().value
+        table.insert(callNode.parameters, argNode)
+
+        lexer:next()
+        if lexer:lexem().tag == ',' then
+          lexer:eat{tag = ','}
+          lexer:eat{tag = 'space'}
+          isArgRequired = true
+        end
+
       end
-      return funcDeclarationNode
+      lexer:eat{tag = ')'}
+      lexer:eat{tag = 'endOfLine'}
+      table.insert(funcDeclarationNode.body, callNode)
     end
+  end
+  return funcDeclarationNode
+end
 
 M.parse = function(self)
   local ast = {}
