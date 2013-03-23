@@ -134,8 +134,6 @@ M.forEach = function(list, func)
   end
 end
 
--------------------------------------------------
-
 local findFirstDifferentLineIndex = function(lines1, lines2)
   assert(lines1 ~= nil)
   assert(type(lines1) == 'table', type(lines1))
@@ -211,8 +209,5 @@ M.diffStrings = function(ss1, ss2)
 
   return out
 end
-
-
--------------------------------------------------
 
 return M
