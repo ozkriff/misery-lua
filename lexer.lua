@@ -23,8 +23,7 @@ M.new = function()
   return self
 end
 
--- splits string into prelexems
-M.parseString = function(source)
+M.splitStringIntoPrelexems = function(source)
   local lexems = {}
   local appendCharToLastLexem = function(char)
     lexems[#lexems] = lexems[#lexems] .. char
@@ -97,7 +96,7 @@ local readString = function(prelexems)
   return node
 end
 
-M.incDecIndent = function(prelexems)
+M.convertPrelexemsToLexems = function(prelexems)
   local newLexemsList = {}
   local prevIndentLevel = 0
   local prelexem = popLexem(prelexems)
@@ -153,7 +152,8 @@ end
 
 -- TODO: rename!
 M.processString = function(self, str)
-  self._lexems = M.incDecIndent(M.parseString(str))
+  local prelexemsList = M.splitStringIntoPrelexems(str)
+  self._lexems = M.convertPrelexemsToLexems(prelexemsList)
   self._currentLexem = self._lexems[1]
   assert(#self._lexems > 0)
 end

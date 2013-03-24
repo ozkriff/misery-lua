@@ -15,7 +15,8 @@ end
 -- TODO: Rename!
 local doSimpleParseTest = function(lexemsList)
   local concatenatedLexems = table.concat(lexemsList)
-  local parsedLexemsList = Lexer.parseString(concatenatedLexems)
+  local parsedLexemsList
+      = Lexer.splitStringIntoPrelexems(concatenatedLexems)
   Assert.isEqual(#parsedLexemsList, #lexemsList)
   for i = 1, #parsedLexemsList do
     Assert.isEqual(parsedLexemsList[i], lexemsList[i])
@@ -114,8 +115,10 @@ suite.testIndent = function()
       "  if b == 10:\n" ..
       "    c.f()\n" ..
       "d()\n"
-  local parsedPrelexemsList = Lexer.parseString(input)
-  local parsedLexemsList = Lexer.incDecIndent(parsedPrelexemsList)
+  local parsedPrelexemsList
+      = Lexer.splitStringIntoPrelexems(input)
+  local parsedLexemsList
+      = Lexer.convertPrelexemsToLexems(parsedPrelexemsList)
   local expected = {
     {tag = 'func'},
     {tag = ' '},
@@ -152,8 +155,9 @@ end
 suite.testString = function()
   local input = 
       "x.\'kill me\' y"
-  local parsedPrelexemsList = Lexer.parseString(input)
-  local parsedLexemsList = Lexer.incDecIndent(parsedPrelexemsList)
+  local parsedPrelexemsList = Lexer.splitStringIntoPrelexems( input)
+  local parsedLexemsList = Lexer.convertPrelexemsToLexems(
+      parsedPrelexemsList)
   local expected = {
     {tag = 'name' , value = 'x'},
     {tag = '.'},
