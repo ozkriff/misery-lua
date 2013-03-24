@@ -22,8 +22,7 @@ suite.testSimple = function()
       'typedef struct {\n' ..
       '  Int field1;\n' ..
       '  Float field2;\n' ..
-      '} Type1;\n' ..
-      '\n'
+      '} Type1;\n'
   Assert.isEqual(codeInAnsiC, expectedCodeInAnsiC)
 end
 
@@ -47,8 +46,7 @@ suite.testFunc1 = function()
   local expectedCodeInAnsiC =
       'Int x1() {\n' ..
       '  Int var1;\n' ..
-      '}\n' ..
-      '\n'
+      '}\n'
   Assert.isEqual(codeInAnsiC, expectedCodeInAnsiC)
 end
 
@@ -74,8 +72,7 @@ suite.testSimpleFuncCall = function()
   local expectedCodeInAnsiC =
       'Int x1(Int arg1) {\n' ..
       '  f1(arg1);\n' ..
-      '}\n' ..
-      '\n'
+      '}\n'
   Assert.isEqual(codeInAnsiC, expectedCodeInAnsiC)
 end
 

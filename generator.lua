@@ -62,7 +62,6 @@ local generateFunctionDeclaration = function(node)
     out = out .. generateFunctionBody(bodyNode)
   end
   out = out .. '}\n'
-  out = out .. '\n'
   return out
 end
 
@@ -92,8 +91,7 @@ local generateTypeDeclartion = function(node)
   out = out ..
       '} ' ..
       node.name ..
-      ';\n' ..
-      '\n'
+      ';\n'
   return out
 end
 
