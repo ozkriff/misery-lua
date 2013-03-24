@@ -35,4 +35,17 @@ end
 
 suite.testForEach = function() end -- TODO: implement
 
+suite.testDump1 = function()
+  Assert.isEqual(Misc.dump(nil), 'nil')
+  Assert.isEqual(Misc.dump(''), '')
+  Assert.isEqual(Misc.dump('abc'), 'abc')
+  Assert.isEqual(Misc.dump(5), '5')
+  Assert.isEqual(Misc.dump({}), '{\n}')
+  -- TODO: remove this ### space!
+  Assert.isEqual(Misc.dump({{}}), '{\n  {} \n}')
+  Assert.isEqual(Misc.dump({1}), '{\n  1 \n}')
+  Assert.isEqual(Misc.dump({x = 1}), '{\n  x = 1 \n}')
+  Assert.isEqual(Misc.dump('x'), 'x')
+end
+
 return suite
