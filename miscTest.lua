@@ -26,6 +26,13 @@ suite.testSplit2 = function()
   Assert.isEqual(output, expectedOutput)
 end
 
+suite.testSplit3 = function()
+  local input = '!!!!!'
+  local expectedOutput = {}
+  local output = Misc.split(input, '!')
+  Assert.isEqual(output, expectedOutput)
+end
+
 suite.testForEach = function() end -- TODO: implement
 
 return suite
