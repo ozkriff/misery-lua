@@ -23,7 +23,7 @@ M.new = function()
   return self
 end
 
--- разбивает строку на прелексемы
+-- splits string into prelexems
 M.parseString = function(source)
   local lexems = {}
   local appendCharToLastLexem = function(char)

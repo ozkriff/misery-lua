@@ -40,7 +40,7 @@ end
 -- lexer:lexem() -- get current lexem
 -- lexer:peek(number) -- peek following lexems
 -- lexer:next() -- go to next lexems
--- lexer:eat() -- сожрать определенную лексему
+-- lexer:eat() -- consume that lexem
 
 -- TODO: Rename
 suite.testParse1 = function()
