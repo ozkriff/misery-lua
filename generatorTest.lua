@@ -62,6 +62,38 @@ suite.testFunc1 = function()
   Assert.isEqual(codeInAnsiC, expectedCodeInAnsiC)
 end
 
+suite.testSimpleFuncCall = function()
+  local ast = {
+    {
+      tag = 'functionDeclaration',
+      name = 'x1',
+      parameters = {
+        { type = 'Int', name = 'arg1' },
+      },
+      returnValue = { {type = 'Int'} },
+      body = {
+        {
+          tag = 'functionCall',
+          name = 'f1',
+          parameters = { { name = 'arg1' } },
+        }
+      }
+    }
+  }
+  local codeInAnsiC = Generator.generate(ast)
+  local expectedCodeInAnsiC =
+      '#include <stdio.h>\n' ..
+      '\n' ..
+      'typedef int Int;\n' ..
+      'typedef float Float;\n' ..
+      '\n' ..
+      'Int x1(Int arg1) {\n' ..
+      '  f1(arg1);\n' ..
+      '}\n' ..
+      '\n'
+  Assert.isEqual(codeInAnsiC, expectedCodeInAnsiC)
+end
+
 -- TODO: write to some file
 -- local outFile = io.open('out.c', 'w')
 -- outFile:write(codeInAnsiC)
