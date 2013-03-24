@@ -19,11 +19,6 @@ suite.testSimple = function()
   }
   local codeInAnsiC = Generator.generate(ast)
   local expectedCodeInAnsiC =
-      '#include <stdio.h>\n' ..
-      '\n' ..
-      'typedef int Int;\n' ..
-      'typedef float Float;\n' ..
-      '\n' ..
       'typedef struct {\n' ..
       '  Int field1;\n' ..
       '  Float field2;\n' ..
@@ -50,11 +45,6 @@ suite.testFunc1 = function()
   }
   local codeInAnsiC = Generator.generate(ast)
   local expectedCodeInAnsiC =
-      '#include <stdio.h>\n' ..
-      '\n' ..
-      'typedef int Int;\n' ..
-      'typedef float Float;\n' ..
-      '\n' ..
       'Int x1() {\n' ..
       '  Int var1;\n' ..
       '}\n' ..
@@ -82,11 +72,6 @@ suite.testSimpleFuncCall = function()
   }
   local codeInAnsiC = Generator.generate(ast)
   local expectedCodeInAnsiC =
-      '#include <stdio.h>\n' ..
-      '\n' ..
-      'typedef int Int;\n' ..
-      'typedef float Float;\n' ..
-      '\n' ..
       'Int x1(Int arg1) {\n' ..
       '  f1(arg1);\n' ..
       '}\n' ..

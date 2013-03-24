@@ -66,13 +66,13 @@ local generateFunctionDeclaration = function(node)
   return out
 end
 
-local generateStandartIncludes = function()
+M.generateStandartIncludes = function()
   local out = ''
   out = out .. '#include <stdio.h>\n'
   return out
 end
 
-local generateStandartTypedefs = function()
+M.generateStandartTypedefs = function()
   local out = ''
   out = out .. 'typedef int Int;\n'
   out = out .. 'typedef float Float;\n'
@@ -119,11 +119,7 @@ local generateCodeForASTNode = function(node)
 end
 
 M.generate = function(abstractSyntaxTree)
-  local out = 
-      generateStandartIncludes() ..
-      '\n' ..
-      generateStandartTypedefs() ..
-      '\n'
+  local out = ''
   for _, node in ipairs(abstractSyntaxTree) do
     out = out .. generateCodeForASTNode(node)
   end
