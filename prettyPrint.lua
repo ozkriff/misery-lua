@@ -1,3 +1,5 @@
+-- basic version from https://github.com/Anaminus/lua-pretty-print
+--
 -- PrettyPrint
 --   Converts a table to a string with human-readable syntax.
 -- Usage
