@@ -8,7 +8,16 @@ local suite = Misc.newModule()
 
 suite.testDiff = function() end -- TODO: implement
 
-suite.testSplit = function() end -- TODO: implement
+-- TODO: add MORE tests
+suite.testSplit = function()
+  local input =
+      's1\n' ..
+      's2\n' ..
+      's3\n'
+  local output = Misc.split(input, '\n')
+  local expectedOutput = { 's1', 's2', 's3' }
+  Assert.isEqual(output, expectedOutput)
+end
 
 suite.testForEach = function() end -- TODO: implement
 
