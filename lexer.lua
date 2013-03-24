@@ -83,6 +83,20 @@ local popLexem = function(prelexemsList)
   end
 end
 
+local readString = function(prelexems)
+  local node = {}
+  node.tag = 'string'
+  local prelexem = popLexem(prelexems)
+  local value = ''
+  while prelexem ~= nil and prelexem ~= '\'' do
+    -- print('inside string: [' .. prelexem .. ']')
+    value = value .. prelexem
+    prelexem = popLexem(prelexems)
+  end
+  node.value = value
+  return node
+end
+
 M.incDecIndent = function(prelexems)
   local newLexemsList = {}
   local prevIndentLevel = 0
@@ -90,15 +104,9 @@ M.incDecIndent = function(prelexems)
   -- while #prelexems > 0 do
   while prelexem ~= nil do
     if prelexem == '\'' then
-      local value = ''
-      prelexem = popLexem(prelexems)
-      while prelexem ~= nil and prelexem ~= '\'' do
-        -- print('inside string: [' .. prelexem .. ']')
-        value = value .. prelexem
-        prelexem = popLexem(prelexems)
-      end
+      local stringNode = readString(prelexems)
       prelexem = popLexem(prelexems) -- remove closing '\''
-      table.insert(newLexemsList, {tag = 'string', value = value})
+      table.insert(newLexemsList, stringNode)
     elseif prelexem == '\n' then
       table.insert(newLexemsList, {tag = 'endOfLine'})
       local spacesCount = 0
