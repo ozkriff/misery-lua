@@ -117,17 +117,13 @@ M.incDecIndent = function(prelexems)
       indentLevel = spacesCount / 2
       local diff = prevIndentLevel - indentLevel
       prevIndentLevel = indentLevel
-      if diff == 0 and indentLevel ~= 0 then
-        -- table.insert(newLexemsList, {tag = 'samIndent'})
-      else
-        while diff < 0 do
-          table.insert(newLexemsList, {tag = 'incIndent'})
-          diff = diff + 1
-        end
-        while diff > 0 do
-          table.insert(newLexemsList, {tag = 'decIndent'})
-          diff = diff - 1
-        end
+      while diff < 0 do
+        table.insert(newLexemsList, {tag = 'incIndent'})
+        diff = diff + 1
+      end
+      while diff > 0 do
+        table.insert(newLexemsList, {tag = 'decIndent'})
+        diff = diff - 1
       end
     else
       if prelexem == ' ' then
