@@ -101,7 +101,6 @@ M.incDecIndent = function(prelexems)
   local newLexemsList = {}
   local prevIndentLevel = 0
   local prelexem = popLexem(prelexems)
-  -- while #prelexems > 0 do
   while prelexem ~= nil do
     if prelexem == '\'' then
       local stringNode = readString(prelexems)
@@ -149,7 +148,6 @@ M.incDecIndent = function(prelexems)
         })
       else
         -- TODO: error!
-        -- table.insert(newLexemsList, Misc.copy(prelexem))
       end
       prelexem = popLexem(prelexems)
     end
