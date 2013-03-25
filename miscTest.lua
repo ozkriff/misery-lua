@@ -48,4 +48,29 @@ suite.testDump1 = function()
   Assert.isEqual(Misc.dump('x'), 'x')
 end
 
+suite.testDiffStrings = function()
+  local s1 =
+      '1\n' ..
+      '1.5\n' ..
+      '2\n' ..
+      '3\n' ..
+      '4\n'
+  local s2 =
+      '1\n' ..
+      '1.5\n' ..
+      '2X\n' ..
+      '3X\n' ..
+      '4\n'
+  local realDiff = Misc.diffStrings(s1, s2)
+  local expectedDiff =
+      '| 1\n' ..
+      '| 1.5\n' ..
+      '1 2\n' ..
+      '1 3\n' ..
+      '2 2X\n' ..
+      '2 3X\n' ..
+      '| 4\n'
+  Assert.isEqual(realDiff, expectedDiff)
+end
+
 return suite
