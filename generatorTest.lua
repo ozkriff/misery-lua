@@ -63,7 +63,7 @@ suite.testSimpleFuncCall = function()
         {
           tag = 'functionCall',
           name = 'f1',
-          parameters = { { name = 'arg1' } },
+          parameters = { { tag = 'name', name = 'arg1' } },
         }
       }
     }
@@ -72,6 +72,35 @@ suite.testSimpleFuncCall = function()
   local expectedCodeInAnsiC =
       'Int x1(Int arg1) {\n' ..
       '  f1(arg1);\n' ..
+      '}\n'
+  Assert.isEqual(codeInAnsiC, expectedCodeInAnsiC)
+end
+
+suite.testFuncCallIntStringParameters = function()
+  local ast = {
+    {
+      tag = 'functionDeclaration',
+      name = 'x1',
+      parameters = {
+        { type = 'Int', name = 'arg1' },
+      },
+      returnValue = { {type = 'Int'} },
+      body = {
+        {
+          tag = 'functionCall',
+          name = 'f1',
+          parameters = {
+            { tag = 'number', value = 154 },
+            { tag = 'string', value = 'agrh!' },
+          },
+        }
+      }
+    }
+  }
+  local codeInAnsiC = Generator.generate(ast)
+  local expectedCodeInAnsiC =
+      'Int x1(Int arg1) {\n' ..
+      '  f1(154, \"agrh!\");\n' ..
       '}\n'
   Assert.isEqual(codeInAnsiC, expectedCodeInAnsiC)
 end

@@ -28,7 +28,13 @@ local generateFunctionCall = function(node)
   local out = '  ' .. node.name ..'('
   if node.parameters then
     for index, parameterNode in ipairs(node.parameters) do
-      out = out .. parameterNode.name
+      if parameterNode.tag == 'name' then
+        out = out .. parameterNode.name
+      elseif parameterNode.tag == 'number' then
+        out = out .. parameterNode.value
+      elseif parameterNode.tag == 'string' then
+        out = out .. '\"' .. parameterNode.value .. '\"'
+      end
       -- if not last parameter
       if index ~= #node.parameters then
         out = out .. ', '
