@@ -6,7 +6,7 @@ local Assert = require('assert')
 
 local suite = Misc.newModule()
 
-suite.testSimple = function()
+suite.testDeclareStructType = function()
   local ast = {
     {
       tag = 'typeDeclaration',
@@ -26,7 +26,7 @@ suite.testSimple = function()
   Assert.isEqual(codeInAnsiC, expectedCodeInAnsiC)
 end
 
-suite.testFunc1 = function()
+suite.testDeclareFuncWithLocalVariable = function()
   local ast = {
     {
       tag = 'functionDeclaration',
