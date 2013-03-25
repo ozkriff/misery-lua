@@ -73,4 +73,28 @@ suite.testDiffStrings = function()
   Assert.isEqual(realDiff, expectedDiff)
 end
 
+suite.testDiffStringsInserted = function()
+  local s1 =
+      '1\n' ..
+      '2\n' ..
+      '3\n' ..
+      '6\n'
+  local s2 =
+      '1\n' ..
+      '2\n' ..
+      '3\n' ..
+      '4\n' ..
+      '5\n' ..
+      '6\n'
+  local realDiff = Misc.diffStrings(s1, s2)
+  local expectedDiff =
+      '| 1\n' ..
+      '| 2\n' ..
+      '| 3\n' ..
+      '2 4\n' ..
+      '2 5\n' ..
+      '| 6\n'
+  Assert.isEqual(realDiff, expectedDiff)
+end
+
 return suite
