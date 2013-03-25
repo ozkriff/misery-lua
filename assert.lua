@@ -31,6 +31,8 @@ M.isEqual = function(real, expected)
       -- print("ASSERT: 2")
       if type(expected) == 'table' then
         print(Misc.diffTables(expected, real))
+      elseif type(expected) == 'string' then
+        print(Misc.diffStrings(expected, real))
       else
         print(
             'Expected <<< ' ..
